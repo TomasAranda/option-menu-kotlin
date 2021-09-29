@@ -1,8 +1,10 @@
 import java.lang.NumberFormatException
 
 fun main() {
+    // Aux variable for user input
     var selectedOption: Int? = 0
 
+    // BEGINNING OF MENU ELEMENTS DEFINITION
     val rootMenu = Menu("File Menu")
 
     val newMenu = Menu("New")
@@ -34,27 +36,54 @@ fun main() {
     recentMenu.addItem(recent1Option)
     recentMenu.addItem(recent2Option)
     recentMenu.addItem(recent3Option)
+    // END OF MENU ELEMENTS DEFINITION
 
     var currentItem: OptionItem? = rootMenu
 
-    while (selectedOption!! >= 0) {
+    val selectOption = { try { readLine()?.toInt() } catch (e: NumberFormatException) { null } }
+
+    userInputLoop@ while (selectedOption!! >= 0) {
         println("Select an item:")
         println("(0 to go to the upper folder)")
         println("(negative value to exit)")
         currentItem?.open()
-        selectedOption = try { readLine()?.toInt() } catch (e: NumberFormatException) { null }
+        selectedOption = selectOption()
 
+        // Handle invalid input
         if (selectedOption == null) {
             println("Option invalid. Try again")
             selectedOption = 0
         } else if (selectedOption == 0) {
+        // Go to upper folder
             if (currentItem?.upperMenu == null) {
                 println("This is the root directory.")
             } else currentItem = currentItem.upperMenu
         } else {
+        // Open item or folder
             currentItem = currentItem?.open(selectedOption!! - 1)
+            if (currentItem !is Menu) {
+                currentItem?.open()
+                if (selectedOption!! < 0) {
+                    break@userInputLoop
+                }
+                selectedOption = null
+            }
+        // When final option is reached ask for exiting or going back
+            while (selectedOption == null) {
+                println("Do you want to go back? (0) \nOr Exit? (any other number)")
+                selectedOption = selectOption()
+                when (selectedOption) {
+                    0 -> {
+                        currentItem = currentItem?.upperMenu
+                    }
+                    else -> {
+                        break@userInputLoop
+                    }
+                }
+            }
         }
     }
 
     println("Goodbye!")
+
 }
