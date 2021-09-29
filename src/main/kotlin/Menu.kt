@@ -10,8 +10,11 @@ class Menu(override val name: String, override var upperMenu: Menu? = null): Opt
         if (itemIndex != null) return items[itemIndex]
 
         println(this.getItemName())
-        for ((index, item) in items.withIndex()) {
-            println(" ${(index + 1)} ${item.getItemName()}")
+        if (this.items.isEmpty()) println(" *This folder is empty*")
+        else {
+            for ((index, item) in items.withIndex()) {
+                println(" ${(index + 1)} ${item.getItemName()}")
+            }
         }
         return this
     }
