@@ -49,35 +49,39 @@ fun main() {
         currentItem?.open()
         selectedOption = selectOption()
 
+        when (selectedOption) {
         // Handle invalid input
-        if (selectedOption == null) {
-            println("Option invalid. Try again")
-            selectedOption = 0
-        } else if (selectedOption == 0) {
-        // Go to upper folder
-            if (currentItem?.upperMenu == null) {
-                println("This is the root directory.")
-            } else currentItem = currentItem.upperMenu
-        } else {
-        // Open item or folder
-            currentItem = currentItem?.open(selectedOption!! - 1)
-            if (currentItem !is Menu) {
-                currentItem?.open()
-                if (selectedOption!! < 0) {
-                    break@userInputLoop
-                }
-                selectedOption = null
+            null -> {
+                println("Option invalid. Try again")
+                selectedOption = 0
             }
-        // When final option is reached ask for exiting or going back
-            while (selectedOption == null) {
-                println("Do you want to go back? (0) \nOr Exit? (any other number)")
-                selectedOption = selectOption()
-                when (selectedOption) {
-                    0 -> {
-                        currentItem = currentItem?.upperMenu
-                    }
-                    else -> {
+        // Go to upper folder
+            0 -> {
+                if (currentItem?.upperMenu == null) {
+                    println("This is the root directory.")
+                } else currentItem = currentItem.upperMenu
+            }
+        // Open item or folder
+            else -> {
+                currentItem = try { currentItem?.open(selectedOption!! - 1) } catch (e: IndexOutOfBoundsException) { currentItem }
+                if (currentItem !is Menu) {
+                    currentItem?.open()
+                    if (selectedOption!! < 0) {
                         break@userInputLoop
+                    }
+                    selectedOption = null
+                }
+                // When final option is reached ask for exiting or going back
+                while (selectedOption == null) {
+                    println("Do you want to go back? (0) \nOr Exit? (any other number)")
+                    selectedOption = selectOption()
+                    when (selectedOption) {
+                        0 -> {
+                            currentItem = currentItem?.upperMenu
+                        }
+                        else -> {
+                            break@userInputLoop
+                        }
                     }
                 }
             }

@@ -1,4 +1,6 @@
-class Option(override val name: String, override var upperMenu: Menu? = null, val action: () -> Unit): OptionItem {
+class Option(override val name: String, val action: () -> Unit): OptionItem {
+    override var upperMenu: Menu? = null
+
     override fun open(itemIndex: Int?): OptionItem? {
         action()
         return null

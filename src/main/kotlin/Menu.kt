@@ -1,4 +1,6 @@
-class Menu(override val name: String, override var upperMenu: Menu? = null): OptionItem {
+class Menu(override val name: String): OptionItem {
+    override var upperMenu: Menu? = null
+
     private val items = mutableListOf<OptionItem>()
 
     fun addItem(item: OptionItem) {
@@ -7,7 +9,10 @@ class Menu(override val name: String, override var upperMenu: Menu? = null): Opt
     }
 
     override fun open(itemIndex: Int?): OptionItem {
-        if (itemIndex != null) return items[itemIndex]
+        if (itemIndex != null) {
+            if (itemIndex >= items.size) println("Invalid option!")
+            return items[itemIndex]
+        }
 
         println(this.getItemName())
         if (this.items.isEmpty()) println(" *This folder is empty*")
